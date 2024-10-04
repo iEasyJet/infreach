@@ -1,8 +1,14 @@
-import { createClient } from "@/utils/supabase/server";
-import { InfoIcon } from "lucide-react";
-import { redirect } from "next/navigation";
+import { createClient } from '@/utils/supabase/server';
+import { InfoIcon } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { FormMessage, Message } from '@/components/form-message';
+import Link from 'next/link';
 
-export default async function ProtectedPage() {
+export default async function ProtectedPage({
+  searchParams,
+}: {
+  searchParams: Message;
+}) {
   const supabase = createClient();
 
   const {
@@ -10,7 +16,7 @@ export default async function ProtectedPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/sign-in");
+    return redirect('/sign-in');
   }
 
   return (
@@ -28,6 +34,17 @@ export default async function ProtectedPage() {
           {JSON.stringify(user, null, 2)}
         </pre>
       </div>
+      <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
+        <InfoIcon size="16" strokeWidth={2} />
+        Change your password?
+        <Link
+          className="text-foreground font-medium underline"
+          href="/protected/update-password"
+        >
+          Click here!
+        </Link>
+      </div>
+      <FormMessage message={searchParams} />
     </div>
   );
 }
